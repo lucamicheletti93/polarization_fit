@@ -28,8 +28,8 @@
 
 void helicity_polarization_fit_2D(){
 
-  gSystem -> CompileMacro("../settings.h");
-  gROOT -> ProcessLine(".x ../binning.C");
+  gSystem -> CompileMacro("../signal_extraction/settings.h");
+  gROOT -> ProcessLine(".x ../signal_extraction/binning.C");
 
   gStyle -> SetOptStat(0);
   gStyle -> SetOptFit(1);
@@ -47,43 +47,43 @@ void helicity_polarization_fit_2D(){
   int matrix_stat_N_Jpsi_HE[N_cost_bins][N_phi_bins];
 
   TFile *N_Jpsi_file = new TFile("/home/luca/cernbox/JPSI/JPSI_POLARIZATION/ANALYSIS/TWO_DIM_APPROACH/SIGNAL_EXTRACTION/HISTOS_FOR_SIGNAL_EXTRACTION/GIT_OUTPUT/N_Jpsi.root","READ");
-  TTree *N_Jpsi_tree = (TTree*) N_Jpsi_file -> Get("CB2_VWG");
-
-  N_Jpsi_tree -> SetBranchAddress("N_Jpsi_HE",matrix_N_Jpsi_HE);
-  N_Jpsi_tree -> SetBranchAddress("Stat_Jpsi_HE",matrix_stat_N_Jpsi_HE);
-
-  for(int i = 0;i < N_Jpsi_tree -> GetEntries();i++){N_Jpsi_tree -> GetEntry(i);}
-
-  /*for(int i = 0;i < N_cost_bins;i++){
-    for(int j = 0;j < N_phi_bins;j++){
-      cout << matrix_N_Jpsi_HE[i][j] << " ";
-    }
-    cout << endl;
-  }*/
+  //TFile *N_Jpsi_file = new TFile("/home/luca/cernbox/JPSI/JPSI_POLARIZATION/ANALYSIS/TWO_DIM_APPROACH/POLARIZED_DISTRIBUTIONS/sum_variable_Jpsi_polarization_LowStat.root");
+  //TFile *N_Jpsi_file = new TFile("/home/luca/cernbox/JPSI/JPSI_POLARIZATION/ANALYSIS/TWO_DIM_APPROACH/POLARIZED_DISTRIBUTIONS/variable_Jpsi_polarization_sample_LowStat_reduced.root");
 
   TH2D *hist_N_Jpsi_2pt6_HE = new TH2D("hist_N_Jpsi_2pt6_HE","hist_N_Jpsi_2pt6_HE",N_cost_bins,value_cost,N_phi_bins,value_phi);
+  hist_N_Jpsi_2pt6_HE -> GetXaxis() -> SetLabelSize(0);
+  hist_N_Jpsi_2pt6_HE -> GetYaxis() -> SetLabelSize(0);
 
-  TH2D *h_N_Jpsi_HE = new TH2D("h_N_Jpsi_HE","h_N_Jpsi_HE",N_cost_bins,value_cost,N_phi_bins,value_phi);
-  h_N_Jpsi_HE -> GetXaxis() -> SetLabelSize(0);
-  h_N_Jpsi_HE -> GetYaxis() -> SetLabelSize(0);
+  TH2D *hist_N_Jpsi_2pt6_HE = (TH2D*) N_Jpsi_file -> Get("hist_N_Jpsi_HE");
+  //TH2D *hist_N_Jpsi_2pt6_HE = (TH2D*) N_Jpsi_file -> Get("hist_rec_polarization_Rebin14");
+  hist_N_Jpsi_2pt6_HE -> Sumw2();
+  //hist_N_Jpsi_2pt6_HE -> Draw();
+
+  //int counter = 0;
+  //TH1D *hist_rel_err = new TH1D("hist_rel_err","hist_rel_err",180,0,180);
+  //for(int i = 0;i < 18;i++){
+    //for(int j = 0;j < 10;j++){
+      //hist_rel_err -> SetBinContent(counter+1,hist_N_Jpsi_2pt6_HE -> GetBinError(i+1,j+1)/hist_N_Jpsi_2pt6_HE -> GetBinContent(i+1,j+1));
+      //counter++;
+    //}
+  //}
+
+  //hist_rel_err -> Draw();
+
+  /*TH2D *hist_N_Jpsi_area_2pt6_HE = new TH2D("hist_N_Jpsi_area_2pt6_HE","hist_N_Jpsi_area_2pt6_HE",N_cost_bins,value_cost,N_phi_bins,value_phi);
 
   for(int i = 0;i< N_cost_bins;i++){
     for(int j = 0;j < N_phi_bins;j++){
-      hist_N_Jpsi_2pt6_HE -> SetBinContent(i+1,j+1,matrix_N_Jpsi_HE[i][j]);
-      hist_N_Jpsi_2pt6_HE -> SetBinError(i+1,j+1,matrix_stat_N_Jpsi_HE[i][j]);
+      hist_N_Jpsi_area_2pt6_HE -> SetBinContent(i+1,j+1,(hist_N_Jpsi_2pt6_HE -> GetBinContent(i+1,j+1))/bin_area[i][j]);
+      hist_N_Jpsi_area_2pt6_HE -> SetBinError(i+1,j+1,(hist_N_Jpsi_2pt6_HE -> GetBinError(i+1,j+1))/bin_area[i][j]);
+      //printf("%i +- %i \n",(hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinContent(i+1,j+1))/bin_area[i][j],(hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinError(i+1,j+1))/bin_area[i][j]);
     }
   }
 
-  printf("%f +- %f \n",hist_N_Jpsi_2pt6_HE -> GetBinContent(1,1),hist_N_Jpsi_2pt6_HE -> GetBinError(1,1));
+  TCanvas *ccc = new TCanvas("ccc","ccc",20,20,600,600);
+  hist_N_Jpsi_area_2pt6_HE -> Draw("COLZtext");*/
 
-  /*TCanvas *c_N_Jpsi_2pt6_HE = new TCanvas("c_N_Jpsi_2pt6_HE","c_N_Jpsi_2pt6_HE",4,132,1024,768);
-  h_N_Jpsi_HE -> Draw();
-  hist_N_Jpsi_2pt6_HE -> Draw("COLZtext");
-
-  for(int i = 0;i < N_line_cost;i++){
-    if(i < N_line_phi) line_phi[i] -> Draw("same");
-    line_cost[i] -> Draw("same");
-  }*/
+  printf("%f +- %f \n",hist_N_Jpsi_2pt6_HE -> GetBinContent(10,10),hist_N_Jpsi_2pt6_HE -> GetBinError(10,10));
 
   //============================================================================
   // ACCXEFF HISTOGRAMS
@@ -92,16 +92,20 @@ void helicity_polarization_fit_2D(){
   TFile *accxeff_file = new TFile("/home/luca/cernbox/JPSI/JPSI_POLARIZATION/ANALYSIS/TWO_DIM_APPROACH/ACCXEFF/HISTOS_FOR_ACCXEFF/GIT_OUTPUT/accxeff.root","READ");
   TH2D *hist_accxeff_2pt6_HE = (TH2D*) accxeff_file -> Get("hist_accxeff_HE_2pt6_rebin");
 
-  printf("%f +- %f \n",hist_accxeff_2pt6_HE -> GetBinContent(1,1),hist_accxeff_2pt6_HE -> GetBinError(1,1));
+  TCanvas *cccc = new TCanvas("cccc","cccc",10,10,600,600);
+  hist_accxeff_2pt6_HE -> Draw("COLZtext");
+
+  printf("%f +- %f \n",hist_accxeff_2pt6_HE -> GetBinContent(10,10),hist_accxeff_2pt6_HE -> GetBinError(10,10));
 
   //============================================================================
   // N_Jpsi CORRECTED FOR ACCXEFF DISTRIBUTION
   //============================================================================
 
   TH2D *hist_N_Jpsi_accxeff_corrected_2pt6_HE = new TH2D("hist_N_Jpsi_accxeff_corrected_2pt6_HE","hist_N_Jpsi_accxeff_corrected_2pt6_HE",N_cost_bins,value_cost,N_phi_bins,value_phi);
+  hist_N_Jpsi_accxeff_corrected_2pt6_HE -> Sumw2();
   hist_N_Jpsi_accxeff_corrected_2pt6_HE -> Divide(hist_N_Jpsi_2pt6_HE,hist_accxeff_2pt6_HE,1,1);
 
-  printf("%f +- %f \n",hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinContent(1,1),hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinError(1,1));
+  printf("%f +- %f \n",hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinContent(10,10),hist_N_Jpsi_accxeff_corrected_2pt6_HE -> GetBinError(10,10));
 
   //============================================================================
   // N_Jpsi CORRECTED FOR ACCXEFF AND BIN-AREA DISTRIBUTION
@@ -120,15 +124,13 @@ void helicity_polarization_fit_2D(){
     }
   }
 
+  //TH1D *projection_phi = (TH1D*) hist_N_Jpsi_accxeff_corrected_2pt6_HE -> ProjectionY("projection_phi");
+  TH1D *projection_cost = (TH1D*) hist_N_Jpsi_accxeff_corrected_2pt6_HE -> ProjectionX("projection_cost");
 
-  /*for(int i = 0;i< N_cost_bins;i++){
-    cout << "{";
-    for(int j = 0;j < N_phi_bins;j++){
-      //cout << hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> GetBinContent(i+1,j+1) << " ";
-      printf("%i,",hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> GetBinError(i+1,j+1));
-    }
-    cout << "}," << endl;
-  }*/
+  TCanvas *cccc = new TCanvas("cccc","cccc",10,10,600,600);
+  //hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> Draw("COLZtext");
+  //projection_phi -> Draw();
+  projection_cost -> Draw();
 
 
   //============================================================================
@@ -140,15 +142,18 @@ void helicity_polarization_fit_2D(){
   //----------------------------------------------------------------------------
   TH2D *hist_N_Jpsi_fit_HE = (TH2D*) hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> Clone("hist_N_Jpsi_fit_HE");
 
-  TF2 *func_W_HE = new TF2("func_W_HE",Func_W,-0.5,0.5,0.95,2.2,4);
+  TF2 *func_W_HE = new TF2("func_W_HE",Func_W,-0.6,0.6,0.502655,2.63894,4); // binning 2
+  //TF2 *func_W_HE = new TF2("func_W_HE",Func_W,-0.8,0.8,0.942478,2.19911,4); // binning 1
+  //TF2 *func_W_HE = new TF2("func_W_HE",Func_W,-0.8,0.8,0,PI,4);
   func_W_HE -> SetParameter(0,1000);
   func_W_HE -> SetParName(0,"N");
-  func_W_HE -> SetParameter(1,1);
+  func_W_HE -> SetParameter(1,0);
   func_W_HE -> SetParName(1,"#lambda_{#theta}");
-  func_W_HE -> SetParameter(2,1);
+  func_W_HE -> FixParameter(2,0);
   func_W_HE -> SetParName(2,"#lambda_{#phi}");
-  func_W_HE -> SetParameter(3,1);
+  func_W_HE -> FixParameter(3,0);
   func_W_HE -> SetParName(3,"#lambda_{#theta#phi}");
+  //hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> Fit(func_W_HE,"RSI0LW");
   hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> Fit(func_W_HE,"RSI0");
 
   char title[100];
@@ -164,13 +169,41 @@ void helicity_polarization_fit_2D(){
   t_fit_HE -> AddText(title);
 
   TCanvas *c_fit_2pt6_HE = new TCanvas("c_fit_2pt6_HE","c_fit_2pt6_HE",4,132,1024,768);
+
+  //TH3D *h_frame = new TH3D("h_frame","",100,-1,1,50,0,PI,100,20000,200000);
   //hist_N_Jpsi_fit_HE -> Draw("SURF1");
   //func_W_HE -> Draw("SURFsame");
-  hist_N_Jpsi_fit_HE -> Draw("COLZ");
+  //h_frame -> Draw();
+  //hist_N_Jpsi_fit_HE -> Draw("SURF1same");
+  //func_W_HE -> Draw("SURF");
+  //hist_N_Jpsi_fit_HE -> Draw("SURF1same");
+  hist_N_Jpsi_fit_HE -> Draw("COLZtexterror");
   func_W_HE -> Draw("same");
   t_fit_HE -> Draw("same");
 
-  return;
+  cout << func_W_HE -> GetChisquare()/func_W_HE -> GetNDF() << endl;
+  cout << func_W_HE -> Eval(0,0) << endl;
+
+  double central_cost[N_cost_bins];
+  double central_phi[N_cost_bins];
+
+  for(int i = 0;i < N_cost_bins;i++){
+    central_cost[i] = value_cost[i] + (TMath::Abs(value_cost[i+1] - value_cost[i])/2);
+    for(int j = 0;j < N_phi_bins;j++){
+      central_phi[j] = value_phi[j] + (TMath::Abs(value_phi[j+1] - value_phi[j])/2);
+    }
+  }
+
+  TH2D *hist_ratio_func_histo = new TH2D("hist_ratio_func_histo","",N_cost_bins,value_cost,N_phi_bins,value_phi);
+
+  for(int i = 0;i < N_cost_bins;i++){
+    for(int j = 0;j < N_phi_bins;j++){
+      hist_ratio_func_histo -> SetBinContent(i+1,j+1,hist_N_Jpsi_accxeff_area_corrected_2pt6_HE -> GetBinContent(i+1,j+1)/func_W_HE -> Eval(central_cost[i],central_phi[j]));
+    }
+  }
+
+  TCanvas *c_histo_ratio = new TCanvas("c_histo_ratio","c_histo_ratio",20,20,600,600);
+  hist_ratio_func_histo -> Draw("COLZtext");
 
   //============================================================================
   // CHECK THE TH1 PROJECTION
@@ -181,10 +214,11 @@ void helicity_polarization_fit_2D(){
   //----------------------------------------------------------------------------
   TH1D *projection_cost = (TH1D*) hist_N_Jpsi_fit_HE -> ProjectionX("projection_cost");
 
-  TF1 *projection_cost_W = new TF1("projection_cost_W",Func_cost,-1,1,2);
+  TF1 *projection_cost_W = new TF1("projection_cost_W",Func_cost,-0.8,0.8,2);
   projection_cost_W -> SetParameter(0,func_W_HE -> GetParameter(0));
   projection_cost_W -> SetParameter(1,func_W_HE -> GetParameter(1));
-  projection_cost -> Fit(projection_cost_W,"RS0");
+  //projection_cost_W -> FixParameter(1,0.6);
+  projection_cost -> Fit(projection_cost_W,"RSI0LW");
 
   TCanvas *c_projection_cost = new TCanvas("c_projection_cost","c_projection_cost",4,132,1024,768);
   projection_cost -> Draw();
@@ -194,11 +228,11 @@ void helicity_polarization_fit_2D(){
 
   TH1D *projection_phi = (TH1D*) hist_N_Jpsi_fit_HE -> ProjectionY("projection_phi");
 
-  TF1 *projection_phi_W = new TF1("projection_phi_W",Func_phi,0,PI,3);
+  TF1 *projection_phi_W = new TF1("projection_phi_W",Func_phi,0.502655,2.63894,3);
   projection_phi_W -> SetParameter(0,func_W_HE -> GetParameter(0));
-  projection_phi_W -> FixParameter(1,func_W_HE -> GetParameter(1));
+  projection_phi_W -> FixParameter(1,func_W_HE -> GetParameter(1)); // it has to be fixed
   projection_phi_W -> SetParameter(2,func_W_HE -> GetParameter(2));
-  projection_phi -> Fit(projection_phi_W,"RS0");
+  projection_phi -> Fit(projection_phi_W,"RSI0LW");
 
   TCanvas *c_projection_phi = new TCanvas("c_projection_phi","c_projection_phi",4,132,1024,768);
   projection_phi -> Draw();
